@@ -21,7 +21,8 @@ export default function useCommands() {
         echo: (args: string[]) => args.join(' '),
         clear: () => '',
         figlet: (args: string[]) => createText(args.join(' ')),
-        banner: () => commands.figlet(['jack970'])
+        banner: () => commands.figlet(['jack970']),
+        repo: () => { if (typeof window !== 'undefined') { window.open(`https://github.com/jack970/terminal`) } }
     }
 
     const getPrompt = () => {

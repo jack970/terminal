@@ -2,7 +2,7 @@ import figlet from 'figlet'
 import Standard from '../../node_modules/figlet/importable-fonts/Standard'
 
 export const createText = (text: string) => {
-    let asciiText
+    let asciiText: string = ''
 
     figlet.parseFont('Standard', Standard)
     figlet.text(text, {
