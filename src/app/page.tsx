@@ -1,101 +1,111 @@
-import Image from "next/image";
+'use client'
+
+import useCommands from "@/utils/commands";
+import { useEffect, useRef, useState } from "react";
+
+type outputItem = {
+  type: 'command' | 'output',
+  content: string
+}
 
 export default function Home() {
-  return (
-    <div className="grid grid-rows-[20px_1fr_20px] items-center justify-items-center min-h-screen p-8 pb-20 gap-16 sm:p-20 font-[family-name:var(--font-geist-sans)]">
-      <main className="flex flex-col gap-8 row-start-2 items-center sm:items-start">
-        <Image
-          className="dark:invert"
-          src="/next.svg"
-          alt="Next.js logo"
-          width={180}
-          height={38}
-          priority
-        />
-        <ol className="list-inside list-decimal text-sm text-center sm:text-left font-[family-name:var(--font-geist-mono)]">
-          <li className="mb-2">
-            Get started by editing{" "}
-            <code className="bg-black/[.05] dark:bg-white/[.06] px-1 py-0.5 rounded font-semibold">
-              src/app/page.tsx
-            </code>
-            .
-          </li>
-          <li>Save and see your changes instantly.</li>
-        </ol>
+  const [inputCommand, setInputCommand] = useState('');
+  const [outputCommand, setOutputCommand] = useState<outputItem[]>([]);
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [lastCommandIndex, setLastCommandIndex] = useState<number>(0)
 
-        <div className="flex gap-4 items-center flex-col sm:flex-row">
-          <a
-            className="rounded-full border border-solid border-transparent transition-colors flex items-center justify-center bg-foreground text-background gap-2 hover:bg-[#383838] dark:hover:bg-[#ccc] text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5"
-            href="https://vercel.com/new?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            <Image
-              className="dark:invert"
-              src="/vercel.svg"
-              alt="Vercel logomark"
-              width={20}
-              height={20}
-            />
-            Deploy now
-          </a>
-          <a
-            className="rounded-full border border-solid border-black/[.08] dark:border-white/[.145] transition-colors flex items-center justify-center hover:bg-[#f2f2f2] dark:hover:bg-[#1a1a1a] hover:border-transparent text-sm sm:text-base h-10 sm:h-12 px-4 sm:px-5 sm:min-w-44"
-            href="https://nextjs.org/docs?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Read our docs
-          </a>
-        </div>
-      </main>
-      <footer className="row-start-3 flex gap-6 flex-wrap items-center justify-center">
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org/learn?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/file.svg"
-            alt="File icon"
-            width={16}
-            height={16}
+  const { commands, getPrompt } = useCommands()
+
+  const processCommand = (command: string) => {
+    // Aqui você pode adicionar a lógica para processar o comando
+    const [commandName, ...args] = command.split(' ')
+    const commandFunction = commands[commandName]
+
+    if (commandFunction) {
+      let output = commandFunction(args)
+      setOutputCommand((prevOutput) => [...prevOutput, { type: 'output', content: output }])
+      if (commandName == 'clear') {
+        setOutputCommand([{ type: 'output', content: '' }])
+      }
+    } else {
+      let output = `${commandName}: command not found`;
+      setOutputCommand((prevOutput) => [...prevOutput, { type: 'output', content: output }])
+    }
+  }
+
+  useEffect(() => {
+    processCommand('echo Bem-vindo ao terminal!'); // Comando inicial
+    processCommand('banner'); // Processa o comando inicial
+    processCommand("echo Type 'help' to see list of available commands."); // Processa o comando inicial
+  }, []); // Executa apenas uma vez, ao montar o componente
+
+  const handleCommand = () => {
+    setOutputCommand((prevOutput) => [...prevOutput, { type: 'command', content: `${getPrompt()} ${inputCommand}` }]);
+    processCommand(inputCommand)
+    setInputCommand('');
+  };
+
+  const handleClick = () => {
+    if (inputRef.current) {
+      inputRef.current.focus(); // Foca no input ao clicar na tela
+    }
+  };
+
+  const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    const historyCommands = outputCommand.filter(value => value.type === "command")
+    if (!historyCommands.length) {
+      return
+    }
+    if (e.key === 'Enter') {
+      e.preventDefault();
+      handleCommand()
+      setLastCommandIndex(0);
+    }
+    if (e.key === 'ArrowUp') {
+      const index = lastCommandIndex + 1
+      if (index <= historyCommands.length) {
+        setLastCommandIndex(index)
+        const { content } = historyCommands[historyCommands.length - index]
+        setInputCommand(content.split(' ').splice(1).join(' '))
+      }
+    }
+    if (e.key === 'ArrowDown') {
+      const index = lastCommandIndex - 1
+      if (index > 0) {
+        setLastCommandIndex(index)
+        const { content } = historyCommands[historyCommands.length - index]
+        setInputCommand(content.split(' ').splice(1).join(' '))
+      } else {
+        setLastCommandIndex(0)
+        setInputCommand('')
+      }
+    }
+  }
+
+  return (
+    <div onClick={handleClick} className="bg-black text-green-400 font-mono h-screen p-4">
+      <div className="h-full overflow-y-auto">
+        {outputCommand.map((item, index) => (
+          <div key={index} className={item.type === 'command' ? 'text-green-400' : 'text-white whitespace-pre'}>
+            {item.content}
+          </div>
+        ))}
+        <form onSubmit={(e) => {
+          e.preventDefault()
+          handleCommand()
+        }} className="flex">
+          <span className="text-green-400">{getPrompt()}</span>
+          <input
+            type="text"
+            ref={inputRef}
+            value={inputCommand}
+            onChange={(e) => setInputCommand(e.target.value)}
+            onKeyDown={handleKeyDown}
+            className="bg-transparent text-green-400 outline-none flex-grow ml-2"
+            autoFocus
           />
-          Learn
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://vercel.com/templates?framework=next.js&utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/window.svg"
-            alt="Window icon"
-            width={16}
-            height={16}
-          />
-          Examples
-        </a>
-        <a
-          className="flex items-center gap-2 hover:underline hover:underline-offset-4"
-          href="https://nextjs.org?utm_source=create-next-app&utm_medium=appdir-template-tw&utm_campaign=create-next-app"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          <Image
-            aria-hidden
-            src="/globe.svg"
-            alt="Globe icon"
-            width={16}
-            height={16}
-          />
-          Go to nextjs.org →
-        </a>
-      </footer>
+        </form>
+      </div>
     </div>
   );
 }
