@@ -100,15 +100,13 @@ export default function Home() {
     }
   }
   return (
-    <div onClick={handleClick} className="h-full bg-black text-green-400 font-mono border-2 rounded-md p-8 overflow-auto border-gray-600">
-      <div className="h-full overflow-y-auto">
+    <div onClick={handleClick} className="h-full bg-black text-green-400 font-mono border-2 rounded-md p-8 overflow-auto border-gray-600 text-xs md:min-w-full md:text-base">
+      <div className="overflow-y-auto h-full">
         {history.map((item, index) => (
           <div key={index}>
-            <div>
-              <div className="flex items-center space-x-1">
-                <Prompt />
-                <span className="text-white">{item.command}</span>
-              </div>
+            <div className="flex items-center space-x-1">
+              <Prompt />
+              <div className="text-white flex-grow whitespace-pre">{item.command}</div>
             </div>
             <p className="whitespace-pre mb-3">{item.output}</p>
           </div>
