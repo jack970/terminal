@@ -1,6 +1,6 @@
 import useCommands from "@/utils/commands"
 
-export default function PS1() {
+export default function Prompt() {
     const { commands } = useCommands()
     return (
         <div>

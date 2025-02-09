@@ -1,7 +1,7 @@
 'use client'
 
 import { useHistory } from "@/components/history/hook";
-import PS1 from "@/components/PS1";
+import Prompt from "@/components/Prompt";
 import useCommands from "@/utils/commands";
 import { useEffect, useRef } from "react";
 
@@ -106,7 +106,7 @@ export default function Home() {
           <div key={index}>
             <div>
               <div className="flex items-center space-x-1">
-                <PS1 />
+                <Prompt />
                 <span className="text-white">{item.command}</span>
               </div>
             </div>
@@ -117,7 +117,7 @@ export default function Home() {
           e.preventDefault()
           handleCommand()
         }} className="flex">
-          <PS1 />
+          <Prompt />
           <input
             type="text"
             ref={inputRef}
