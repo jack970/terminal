@@ -21,15 +21,25 @@ export default function useCommands() {
         echo: (args: string[]) => args.join(' '),
         clear: () => '',
         figlet: (args: string[]) => createText(args.join(' ')),
-        banner: () => commands.figlet(['jack970']),
-        repo: () => { if (typeof window !== 'undefined') { window.open(`https://github.com/jack970/terminal`) } }
+        banner: () => `         
+         ___   ____
+       /' --;^/ ,-_\\     \\ | /      
+      / / --o\\ o-\\ \\\\   --(_)--  
+     /-/-/|o|-|\\-\\\\|\\\\   / | \\   _____   ________ ______  _________ 
+      ''  ' |-|   '' '          / /   | / ____/ //_/ __ \\/__  / __ \\
+            |-|            __  / / /| |/ /   / ,< / /_/ /  / / / / /
+            |-|O          / /_/ / ___ / /___/ /| |\\__, /  / / /_/ / 
+            |-(\\,__       \\____/_/  |_\\____/_/ |_/____/  /_/\\____/  
+         ...|-|\\--,\\_....                                  © ${new Date().getFullYear()}
+      ,;;;;;;;;;;;;;;;;;;;;;;;;,.  
+~~,;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;;,~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
+Type 'help' to see the list of available commands.
+Type 'sumfetch' to display summary.
+`,
+        repo: () => {
+            if (typeof window !== 'undefined') { window.open(`https://github.com/jack970/terminal`) }
+        }
     }
 
-    const getPrompt = () => {
-        const user = commands.whoami([''])
-        const hostname = commands.hostname(['']); // Obtém o hostname
-        return `${user}@${hostname}:~$`;
-    }
-
-    return { commands, getPrompt }
+    return { commands }
 }

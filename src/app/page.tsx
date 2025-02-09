@@ -1,48 +1,52 @@
 'use client'
 
+import { useHistory } from "@/components/history/hook";
+import PS1 from "@/components/ps1";
 import useCommands from "@/utils/commands";
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useRef } from "react";
 
-type outputItem = {
-  type: 'command' | 'output',
-  content: string
-}
 
 export default function Home() {
-  const [inputCommand, setInputCommand] = useState('');
-  const [outputCommand, setOutputCommand] = useState<outputItem[]>([]);
   const inputRef = useRef<HTMLInputElement>(null);
-  const [lastCommandIndex, setLastCommandIndex] = useState<number>(0)
+  const {
+    history,
+    command,
+    lastCommandIndex,
+    setCommand,
+    addHistory,
+    clearHistory,
+    setLastCommandIndex,
+  } = useHistory([]);
 
-  const { commands, getPrompt } = useCommands()
+  const { commands } = useCommands()
 
-  const processCommand = (command: string) => {
+  const shell = (command: string) => {
     // Aqui você pode adicionar a lógica para processar o comando
-    const [commandName, ...args] = command.split(' ')
+    const [name, ...args] = command.split(' ')
+    const commandName = name.toLowerCase()
     const commandFunction = commands[commandName]
 
-    if (commandFunction) {
+    if (commandName === 'clear') {
+      clearHistory()
+    } else if (commandName === '') {
+      addHistory('')
+    } else if (commandFunction) {
       let output = commandFunction(args)
-      setOutputCommand((prevOutput) => [...prevOutput, { type: 'output', content: output }])
-      if (commandName == 'clear') {
-        setOutputCommand([{ type: 'output', content: '' }])
-      }
+      addHistory(output)
     } else {
       let output = `${commandName}: command not found`;
-      setOutputCommand((prevOutput) => [...prevOutput, { type: 'output', content: output }])
+      addHistory(output)
     }
   }
 
   useEffect(() => {
-    processCommand('echo Bem-vindo ao terminal!'); // Comando inicial
-    processCommand('banner'); // Processa o comando inicial
-    processCommand("echo Type 'help' to see list of available commands."); // Processa o comando inicial
+    shell('banner'); // Processa o comando inicial
   }, []); // Executa apenas uma vez, ao montar o componente
 
   const handleCommand = () => {
-    setOutputCommand((prevOutput) => [...prevOutput, { type: 'command', content: `${getPrompt()} ${inputCommand}` }]);
-    processCommand(inputCommand)
-    setInputCommand('');
+    setCommand(command)
+    shell(command)
+    setCommand('')
   };
 
   const handleClick = () => {
@@ -52,56 +56,65 @@ export default function Home() {
   };
 
   const handleKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
-    const historyCommands = outputCommand.filter(value => value.type === "command")
-    if (!historyCommands.length) {
-      return
-    }
+    const historyCommands = history.map(({ command }) => command).filter((historyCommand: string) => historyCommand)
+
     if (e.key === 'Enter') {
       e.preventDefault();
       handleCommand()
       setLastCommandIndex(0);
     }
+
     if (e.key === 'ArrowUp') {
+      e.preventDefault();
+
       const index = lastCommandIndex + 1
       if (index <= historyCommands.length) {
         setLastCommandIndex(index)
-        const { content } = historyCommands[historyCommands.length - index]
-        setInputCommand(content.split(' ').splice(1).join(' '))
+        setCommand(historyCommands[historyCommands.length - index])
       }
     }
+
     if (e.key === 'ArrowDown') {
+      e.preventDefault();
+
       const index = lastCommandIndex - 1
       if (index > 0) {
         setLastCommandIndex(index)
-        const { content } = historyCommands[historyCommands.length - index]
-        setInputCommand(content.split(' ').splice(1).join(' '))
+        setCommand(historyCommands[historyCommands.length - index])
       } else {
         setLastCommandIndex(0)
-        setInputCommand('')
+        setCommand('')
       }
     }
   }
-
   return (
-    <div onClick={handleClick} className="bg-black text-green-400 font-mono h-screen p-4">
+    <div onClick={handleClick} className="h-full bg-black text-green-400 font-mono border-2 rounded-md p-8 overflow-auto border-gray-600">
       <div className="h-full overflow-y-auto">
-        {outputCommand.map((item, index) => (
-          <div key={index} className={item.type === 'command' ? 'text-green-400' : 'text-white whitespace-pre'}>
-            {item.content}
+        {history.map((item, index) => (
+          <div key={index}>
+            <div>
+              <div className="flex items-center space-x-1">
+                <PS1 />
+                <span className="text-white">{item.command}</span>
+              </div>
+            </div>
+            <p className="whitespace-pre">{item.output}</p>
           </div>
         ))}
         <form onSubmit={(e) => {
           e.preventDefault()
           handleCommand()
         }} className="flex">
-          <span className="text-green-400">{getPrompt()}</span>
+          <PS1 />
           <input
             type="text"
             ref={inputRef}
-            value={inputCommand}
-            onChange={(e) => setInputCommand(e.target.value)}
+            value={command}
+            onChange={(e) => setCommand(e.target.value)}
             onKeyDown={handleKeyDown}
             className="bg-transparent text-green-400 outline-none flex-grow ml-2"
+            autoComplete="off"
+            spellCheck="false"
             autoFocus
           />
         </form>

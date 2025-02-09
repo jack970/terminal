@@ -1,12 +1,12 @@
 import figlet from 'figlet'
-import Standard from '../../node_modules/figlet/importable-fonts/Standard'
+import Slant from 'figlet/importable-fonts/Slant'
 
 export const createText = (text: string) => {
     let asciiText: string = ''
 
-    figlet.parseFont('Standard', Standard)
+    figlet.parseFont('Slant', Slant)
     figlet.text(text, {
-        font: 'Standard',
+        font: 'Slant',
     }, (err, data) => {
         if (err) {
             console.error(err)
