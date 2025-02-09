@@ -1,5 +1,5 @@
 'use client'
-import { createText } from "@/components/figlet";
+import { createText } from "@/utils/figlet";
 import { useEffect, useState } from "react"
 
 export default function useCommands() {
@@ -13,7 +13,14 @@ export default function useCommands() {
     }, []);
 
     const commands: Record<string, (args: string[]) => string | string> = {
-        help: () => 'Available commands: ' + Object.keys(commands).join(', '),
+        help: () => {
+            var c = '';
+            const sortedCommands = Object.keys(commands).sort();
+            for (let i = 1; i <= Object.keys(commands).sort().length; i++) {
+                c += sortedCommands[i - 1] + (i % 7 === 0 ? '\n' : ' ');
+            }
+            return `Available commands: \n\n${c}\n\n[ctrl+l]/clear: clear terminal.`
+        },
         hostname: () => hostname,
         host: () => host,
         whoami: () => 'jack970',
@@ -21,8 +28,7 @@ export default function useCommands() {
         echo: (args: string[]) => args.join(' '),
         clear: () => '',
         figlet: (args: string[]) => createText(args.join(' ')),
-        banner: () => `         
-         ___   ____
+        banner: () => `         ___   ____
        /' --;^/ ,-_\\     \\ | /      
       / / --o\\ o-\\ \\\\   --(_)--  
      /-/-/|o|-|\\-\\\\|\\\\   / | \\   _____   ________ ______  _________ 
@@ -38,6 +44,7 @@ Type 'sumfetch' to display summary.
 `,
         repo: () => {
             if (typeof window !== 'undefined') { window.open(`https://github.com/jack970/terminal`) }
+            return ''
         }
     }
 

@@ -4,6 +4,10 @@ import Slant from 'figlet/importable-fonts/Slant'
 export const createText = (text: string) => {
     let asciiText: string = ''
 
+    if (text === '') {
+        return `Usage: figlet [text].`
+    }
+
     figlet.parseFont('Slant', Slant)
     figlet.text(text, {
         font: 'Slant',

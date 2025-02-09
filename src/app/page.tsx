@@ -1,7 +1,7 @@
 'use client'
 
 import { useHistory } from "@/components/history/hook";
-import PS1 from "@/components/ps1";
+import PS1 from "@/components/PS1";
 import useCommands from "@/utils/commands";
 import { useEffect, useRef } from "react";
 
@@ -43,6 +43,13 @@ export default function Home() {
     shell('banner'); // Processa o comando inicial
   }, []); // Executa apenas uma vez, ao montar o componente
 
+  useEffect(() => {
+    if (inputRef.current) {
+      inputRef.current.scrollIntoView()
+      inputRef.current.focus({ preventScroll: true });
+    }
+  }, [history])
+
   const handleCommand = () => {
     setCommand(command)
     shell(command)
@@ -62,6 +69,11 @@ export default function Home() {
       e.preventDefault();
       handleCommand()
       setLastCommandIndex(0);
+    }
+
+    if (e.key === 'l' && e.ctrlKey) {
+      e.preventDefault();
+      clearHistory();
     }
 
     if (e.key === 'ArrowUp') {
@@ -98,7 +110,7 @@ export default function Home() {
                 <span className="text-white">{item.command}</span>
               </div>
             </div>
-            <p className="whitespace-pre">{item.output}</p>
+            <p className="whitespace-pre mb-3">{item.output}</p>
           </div>
         ))}
         <form onSubmit={(e) => {
