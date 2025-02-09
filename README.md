@@ -1,36 +1,54 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# 💻 TermJack - Terminal Styled Website
 
-## Getting Started
+Uma aplicação web interativa que simula a experiência de um terminal de comando. Permite ao usuário digitar comandos como se estivesse em um terminal real, com suporte para comandos personalizados e animações de digitação.
 
-First, run the development server:
+## 📸 Showcase
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+<p align="center">
+<img src="./demo/terminal.png" width="600"><br>
+<strong>JackTerm Live</strong>
+</p>
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Índice
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- [💻 TermJack - Terminal Styled Website](#-termjack---terminal-styled-website)
+  - [📸 Showcase](#-showcase)
+  - [Índice](#índice)
+  - [Visão Geral](#visão-geral)
+  - [Características](#características)
+  - [Tecnologias Usadas](#tecnologias-usadas)
+  - [Comandos Disponíveis](#comandos-disponíveis)
 
-## Learn More
 
-To learn more about Next.js, take a look at the following resources:
+## Visão Geral
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+Este projeto cria uma interface de terminal web personalizada, onde os usuários podem interagir com uma simulação de terminal diretamente no navegador. Ele foi criado para ser uma ferramenta divertida e educativa, ideal para desenvolvedores, entusiastas de tecnologia ou qualquer pessoa que queira simular a experiência de usar um terminal dentro de uma página da web.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
 
-## Deploy on Vercel
+## Características
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Interface Estilo Terminal**: A aplicação tem uma interface de terminal clássica, com fundo preto e texto branco.
+- **Comandos Personalizados**: O usuário pode digitar e executar comandos personalizados, como `help`, `figlet`, `whoami`, , etc.
+- **Simulação de Comandos Linux**: Emula comandos básicos do Linux como `host`, `echo`, e `clear`.
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## Tecnologias Usadas
+
+Este projeto é construído com as seguintes tecnologias:
+
+- **Frontend**: [React](https://reactjs.org/), [Next.js](https://nextjs.org/), [Tailwind CSS](https://tailwindcss.com/)
+- **TypeScript**: Usado para garantir um desenvolvimento mais robusto e sem erros de tipo.
+- **Bibliotecas e Ferramentas**:
+  - [Figlet](https://github.com/patorjk/figlet.js) para gerar texto estilizado em ASCII.
+
+## Comandos Disponíveis
+
+- **help**: Mostra a lista de comandos disponíveis.
+- **figlet**: Gera um figlet de um texto.
+- **echo**: Mostra o texto na saída padrão.
+- **whoami**: Retorna o nome do usuário.
+- **hostname**: Exibe o nome do host.
+- **clear**: Limpa a tela do terminal.
+- **date**: Exibe a data e hora atual.
+- **banner**: Exibe o banner do terminal.
