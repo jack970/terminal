@@ -19,6 +19,7 @@ Uma aplicação web interativa que simula a experiência de um terminal de coman
   - [Características](#características)
   - [Tecnologias Usadas](#tecnologias-usadas)
   - [Comandos Disponíveis](#comandos-disponíveis)
+  - [Rodando Via Docker](#rodando-via-docker)
 
 
 ## Visão Geral
@@ -52,3 +53,14 @@ Este projeto é construído com as seguintes tecnologias:
 - **clear**: Limpa a tela do terminal.
 - **date**: Exibe a data e hora atual.
 - **banner**: Exibe o banner do terminal.
+
+## Rodando Via Docker
+
+```bash
+git clone https://github.com/jack970/terminal.git && cd terminal
+```
+
+Tenha o docker instalado e digite o comando:
+```
+docker-compose up -d
+```
