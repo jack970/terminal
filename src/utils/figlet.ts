@@ -1,8 +1,8 @@
 import figlet from 'figlet'
-import Slant from 'figlet/importable-fonts/Slant'
+import Slant from 'figlet/importable-fonts/Slant.js'
 
 export const createText = (text: string) => {
-    let asciiText: string = ''
+    let asciiText: string | undefined = ''
 
     if (text === '') {
         return `Usage: figlet [text].`
